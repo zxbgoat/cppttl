@@ -46,7 +46,6 @@ void checkResult(float *hostRef, float *gpuRef, const int N)
         }
     if(match)
         printf("Results Match !\n");
-
 }
 
 double cpuSecond()
