@@ -1,0 +1,5 @@
+project(hello)
+set(src_list main.c)
+message(status "This is BINARY dir " ${hello_BINARY_DIR})
+message(status "This is SOURCE dir " ${hello_SOURCe_DIR})
+add_executable(hello src_list)
