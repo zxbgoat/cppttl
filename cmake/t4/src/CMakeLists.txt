@@ -1,0 +1,6 @@
+add_executable(main main.c)
+find_path(myheder hello.h)
+if(myheader)
+    include_directories(${myheader})
+endif(myheader)
+target_link_libraries(main hello)
