@@ -5,7 +5,7 @@
 *install/
 .vscode/
 .DS_Store
-.idea/
+*.idea/
 *CMakeCache.txt
 *CMakeFiles/
 *Makefile
