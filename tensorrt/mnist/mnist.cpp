@@ -1,16 +1,12 @@
 #include <argsParser.h>
 #include <buffers.h>
 #include <common.h>
-#include <logger.h>
 #include <parserOnnxConfig.h>
-
+#include <logger.h>
 #include <NvInfer.h>
-#include <cuda_runtime_api.h>
 
 #include <cstdlib>
-#include <fstream>
 #include <iostream>
-#include <sstream>
 #include <utility>
 
 using std::unique_ptr;
@@ -18,6 +14,7 @@ using std::shared_ptr;
 using std::move;
 using std::vector;
 using std::to_string;
+using std::string;
 using std::max;
 using std::fixed;
 using std::setw;
@@ -44,7 +41,6 @@ using samplesCommon::enableDLA;
 using scargs = samplesCommon::Args;
 using samplesCommon::parseArgs;
 
-const std::string gSampleName = "TensorRT.sample_mnist";
 
 class MNIST
 {
@@ -112,7 +108,7 @@ bool MNIST::createNetwork(uniptr<nvibuildr> &builder, uniptr<nvinetdef> &network
 
 bool MNIST::infer()
 {
-    scbufmngr buffers(engine);
+    scbufmngr buffers(engine, 1);
     auto context = uniptr<nviexectx>(engine->createExecutionContext());
     if (!context) return false;
     assert(params.inputTensorNames.size() == 1);
@@ -207,6 +203,7 @@ void printHelpInfo()
 
 int main(int argc, char** argv)
 {
+    const string name = "TensorRT.onnx_mnist";
     scargs args;
     bool argsOK = parseArgs(args, argc, argv);
     if (!argsOK)
@@ -220,11 +217,11 @@ int main(int argc, char** argv)
         printHelpInfo();
         return EXIT_SUCCESS;
     }
-    auto sampleTest = gLogger.defineTest(gSampleName, argc, argv);
-    gLogger.reportTestStart(sampleTest);
+    auto sampleTest = Logger::defineTest(name, argc, argv);
+    Logger::reportTestStart(sampleTest);
     MNIST mnist(initParams(args));
     gLogInfo << "Building and running a GPU inference engine for Onnx MNIST" << endl;
-    if (!mnist.build()) return gLogger.reportFail(sampleTest);
-    if (!mnist.infer()) return gLogger.reportFail(sampleTest);
-    return gLogger.reportPass(sampleTest);
+    if (!mnist.build()) return Logger::reportFail(sampleTest);
+    if (!mnist.infer()) return Logger::reportFail(sampleTest);
+    return Logger::reportPass(sampleTest);
 }
