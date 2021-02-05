@@ -1,3 +1,3 @@
-# logger
-set(LOGGER logger.cpp)
-add_library(logger SHARED ${LOGGER})
+include_directories(/usr/local/tensorrt/include)
+
+add_library(logger SHARED logger.cpp)
