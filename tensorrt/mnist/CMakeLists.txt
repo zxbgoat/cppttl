@@ -10,8 +10,7 @@ include_directories(${PROJECT_SOURCE_DIR}/common)
 link_directories(${PROJECT_SOURCE_DIR}/lib)
 
 # add_executable(mnist ../common/logger.cpp mnist.cpp)
-add_executable(mnist onnx_mnist.cpp
-                     mnist.cpp)
+add_executable(mnist onnx_mnist.cpp)
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
 target_link_libraries(mnist
