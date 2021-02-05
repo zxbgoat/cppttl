@@ -3,3 +3,4 @@ project(trtsamples)
 
 add_subdirectory(common)
 add_subdirectory(mnist)
+add_subdirectory(dynashape)
