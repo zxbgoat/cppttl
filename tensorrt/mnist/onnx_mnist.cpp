@@ -128,6 +128,13 @@ bool OnnxMNIST::infer()
         gLogError << "Input Processing failed !" << std::endl;
         return false;
     }
+    buffers.copyInputToDevice();
+    bool status = context->executeV2(buffers.getDeviceBindings().data());
+    if (!status)
+    {
+        gLogError << "Execution performing failed !" << std::endl;
+        return false;
+    }
     buffers.copyOutputToHost();
     if (!verifyOutput(buffers))
     {
