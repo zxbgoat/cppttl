@@ -170,7 +170,7 @@ bool OnnxMNIST::verifyOutput(const samplesCommon::BufferManager &buffers)
         sum += output[i];
     }
     gLogInfo << "Output" << std::endl;
-    for (int i = 0; i < )
+    for (int i = 0; i < outputSize; ++i)
     {
         output[i] /= sum;
         val = std::max(val, output[i]);
