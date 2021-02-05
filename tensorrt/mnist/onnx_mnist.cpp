@@ -4,11 +4,8 @@
 #include <argsParser.h>
 #include <parserOnnxConfig.h>
 #include <NvInfer.h>
-
 #include <cstdlib>
-#include <fstream>
 #include <iostream>
-#include <sstream>
 #include <utility>
 
 class OnnxMNIST
@@ -158,7 +155,7 @@ bool OnnxMNIST::processInput(const samplesCommon::BufferManager &buffers)
     for (int i = 0; i < inputH*inputW; ++i)
         gLogInfo << (" .:-=+*#%@"[fileData[i]/26]) << (((i+1) % inputW) ? "" : "\n");
     gLogInfo << std::endl;
-    float* hostbuf = static_cast<float*>(buffers.getHostBuffer(params.inputTensorNames[0]));
+    auto* hostbuf = static_cast<float*>(buffers.getHostBuffer(params.inputTensorNames[0]));
     for (int i = 0; i < inputH*inputW; ++i)
         hostbuf[i] = 1.0 - float(fileData[i] / 255.);
     return true;
@@ -168,7 +165,7 @@ bool OnnxMNIST::processInput(const samplesCommon::BufferManager &buffers)
 bool OnnxMNIST::verifyOutput(const samplesCommon::BufferManager &buffers)
 {
     const int outputSize = outDims.d[1];
-    float* output = static_cast<float*>(buffers.getHostBuffer(params.outputTensorNames[0]));
+    auto* output = static_cast<float*>(buffers.getHostBuffer(params.outputTensorNames[0]));
     int idx{0};
     float sum{0.0f}, val{0.0f};
     for (int i = 0; i < outputSize; ++i)
@@ -195,14 +192,14 @@ samplesCommon::OnnxSampleParams initParams(const samplesCommon::Args& args)
     samplesCommon::OnnxSampleParams params;
     if (args.dataDirs.empty())
     {
-        params.dataDirs.push_back("data/mnist");
-        params.dataDirs.push_back("data/samples/mnist");
+        params.dataDirs.emplace_back("data/mnist");
+        params.dataDirs.emplace_back("data/samples/mnist");
     }
     else params.dataDirs = args.dataDirs;
     params.onnxFileName = "mnist.onnx";
-    params.inputTensorNames.push_back("Input3");
+    params.inputTensorNames.emplace_back("Input3");
     params.batchSize = 1;
-    params.outputTensorNames.push_back("Plus214_Output_0");
+    params.outputTensorNames.emplace_back("Plus214_Output_0");
     params.dlaCore = args.useDLACore;
     params.int8 = args.runInInt8;
     params.fp16 = args.runInFp16;
@@ -239,19 +236,19 @@ int main(int argc, char** argv)
         printHelpInfo();
         return EXIT_FAILURE;
     }
-    auto test = gLogger.defineTest("onnx_mnist", argc, argv);
-    gLogger.reportTestStart(test);
+    auto test = Logger::defineTest("onnx_mnist", argc, argv);
+    Logger::reportTestStart(test);
     OnnxMNIST mnist(initParams(args));
     gLogInfo << "Building and running a GPU inference engine for Onnx MNIST" << std::endl;
     if (!mnist.build())
     {
         gLogError << "Model building failed !!" << std::endl;
-        return gLogger.reportFail(test);
+        return Logger::reportFail(test);
     }
     if(!mnist.infer())
     {
         gLogError << "Model inferring failed !!!" << std::endl;
-        return gLogger.reportFail(test);
+        return Logger::reportFail(test);
     }
-    return gLogger.reportPass(test);
+    return Logger::reportPass(test);
 }
