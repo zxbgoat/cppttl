@@ -1,7 +1,6 @@
 # opencv
-find_package(OpenCV REQUIRED)
-include_directories(${OpenCV_INCLUDE_DIRS})
-link_directories(${OpenCV_LIBS})
+include_directories(/usr/local/include/opencv4)
+link_directories(/usr/local/lib)
 
 # cuda
 include_directories(/usr/local/cuda/include)
